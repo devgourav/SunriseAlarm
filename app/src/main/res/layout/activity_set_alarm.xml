@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/activity_set_alarm"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:paddingTop="@dimen/activity_vertical_margin"
+  android:paddingBottom="@dimen/activity_vertical_margin"
+  android:paddingLeft="@dimen/activity_horizontal_margin"
+  android:paddingRight="@dimen/activity_horizontal_margin"
+  tools:context="com.beeblebroxlabs.sunrisealarm.SetAlarmActivity">
+
+  <ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+
+      <EditText
+        android:id="@+id/alarmLabelText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Alarm Label"
+        android:padding="5dp"
+        android:background="@android:color/darker_gray"
+        android:inputType="text" />
+
+
+      <TextView
+        android:text="Set Ringtone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ringtoneSelector"
+        android:layout_below="@+id/labelText"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="40dp"
+        android:padding="5dp"
+        android:background="@android:color/darker_gray"
+        android:layout_alignParentEnd="true"
+        android:textSize="18sp" />
+
+
+      <Switch
+        android:text="Next Sunrise Time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:id="@+id/sunriseTimeToggle"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:textSize="18sp" />
+      <TextView
+        android:text="Tommorow's sunrise time is 06:30 am"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/sunriseTimeToggle"
+        android:id="@+id/sunriseTimeText"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:textSize="14sp" />
+      <Switch
+        android:text="Custom Alarm Time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/sunriseTimeText"
+        android:layout_marginTop="42dp"
+        android:id="@+id/customTimeToggle"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:textSize="18sp" />
+      <TimePicker
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/pickerTime"
+        android:layout_below="@+id/customTimeToggle"
+        android:layout_gravity="center_horizontal"
+        android:timePickerMode="spinner" />
+    </LinearLayout>
+  </ScrollView>
+</LinearLayout>
