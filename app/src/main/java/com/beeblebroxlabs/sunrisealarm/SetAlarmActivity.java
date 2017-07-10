@@ -30,11 +30,19 @@ public class SetAlarmActivity extends AppCompatActivity {
   Calendar alarmTime = Calendar.getInstance();
   Intent alarmIntent;
 
+  AlarmModel alarmModel = new AlarmModel();
+  SQLiteHelper sqLiteHelper = new SQLiteHelper(this);
+
+
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_set_alarm);
     this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+    final TimePicker pickerTime = (TimePicker)findViewById(R.id.pickerTime);
+
+    pickerTime.setEnabled(Boolean.FALSE);
 
     alarmIntent = new Intent(SetAlarmActivity.this,AlarmReceiver.class);
 
@@ -60,6 +68,8 @@ public class SetAlarmActivity extends AppCompatActivity {
           if(isCustomTimeEnabledFlag){
             customSwitch.setChecked(Boolean.FALSE);
           }
+        }else{
+          isSunriseTimeEnabledFlag = Boolean.FALSE;
         }
       }
     });
@@ -72,24 +82,28 @@ public class SetAlarmActivity extends AppCompatActivity {
           isCustomTimeEnabledFlag = Boolean.TRUE;
           if(isCustomTimeEnabledFlag){
             sunriseSwitch.setChecked(Boolean.FALSE);
+            pickerTime.setEnabled(Boolean.TRUE);
+            pickerTime.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener(){
+
+              @Override
+              public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+                if(isCustomTimeEnabledFlag){
+                  alarmHour = hourOfDay;
+                  alarmMinute = minute;
+                  alarmTime.set(Calendar.HOUR_OF_DAY,alarmHour);
+                  alarmTime.set(Calendar.MINUTE,alarmHour);
+                }
+              }});
           }
+        }else{
+          isCustomTimeEnabledFlag = Boolean.FALSE;
+          pickerTime.setEnabled(Boolean.FALSE);
         }
       }
     });
 
 
-    final TimePicker pickerTime = (TimePicker)findViewById(R.id.pickerTime);
-    pickerTime.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener(){
 
-      @Override
-      public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-        if(isCustomTimeEnabledFlag){
-          alarmHour = hourOfDay;
-          alarmMinute = minute;
-          alarmTime.set(Calendar.HOUR_OF_DAY,alarmHour);
-          alarmTime.set(Calendar.MINUTE,alarmHour);
-        }
-      }});
 
   }
 
@@ -104,11 +118,20 @@ public class SetAlarmActivity extends AppCompatActivity {
     int id = item.getItemId();
 
     if (id == R.id.okButton) {
-      alarmPendingIntent = PendingIntent.getBroadcast(SetAlarmActivity.this,0,alarmIntent,PendingIntent.FLAG_UPDATE_CURRENT);
-      alarmManager.set(AlarmManager.RTC_WAKEUP,alarmTime.getTimeInMillis(),alarmPendingIntent);
-      Intent intent = new Intent(SetAlarmActivity.this, MainActivity.class);
-      intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-      startActivity(intent);
+      if(!isCustomTimeEnabledFlag && !isSunriseTimeEnabledFlag){
+        Toast.makeText(this, "Please select the alarm time.", Toast.LENGTH_SHORT).show();
+      }
+      else{
+        alarmModel.setAlarmLabel(alarmLabel);
+        alarmModel.setAlarmHour(alarmHour);
+        alarmModel.setAlarmMinute(alarmMinute);
+
+        sqLiteHelper.insertAlarmRecord(alarmModel);
+
+
+        Intent intent = new Intent(SetAlarmActivity.this, MainActivity.class);
+        startActivity(intent);
+      }
     }
     if (id == R.id.cancelButton){
       Intent intent = new Intent(SetAlarmActivity.this, MainActivity.class);

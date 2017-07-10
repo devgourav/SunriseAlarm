@@ -40,26 +40,11 @@
     android:layout_margin="10dp"
     android:layout_below="@+id/weatherFragment_container">
   </FrameLayout>
-
-
-
-  <ScrollView
+  
+  <ListView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="10dp"
-    android:layout_below="@+id/quoteFragment_container"
-    android:layout_alignParentEnd="true"
-    android:layout_alignParentStart="true">
-    <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="vertical" >
-      <Switch
-        android:text="10:31 am | Alarm in 2 hours 15 minutes"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/nextAlarmToggle" />
-    </LinearLayout>
-  </ScrollView>
+    android:id="@+id/alarmListView"
+    android:layout_below="@+id/quoteFragment_container"/>
 
 </RelativeLayout>

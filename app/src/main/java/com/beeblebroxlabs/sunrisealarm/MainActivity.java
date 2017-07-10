@@ -2,6 +2,7 @@ package com.beeblebroxlabs.sunrisealarm;
 
 
 import android.net.Uri;
+import android.provider.SyncStateContract.Constants;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.content.Intent;
@@ -13,9 +14,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
+import android.widget.Toast;
+import java.util.ArrayList;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity implements weatherFragment.OnFragmentInteractionListener,QuoteFragment.OnFragmentInteractionListener{
+  static final int ADD_RECORD = 1;
+  SQLiteHelper sqLiteHelper = new SQLiteHelper(this);
+  ArrayList<AlarmModel> alarmModels = new ArrayList<AlarmModel>();
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -24,20 +31,31 @@ public class MainActivity extends AppCompatActivity implements weatherFragment.O
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
 
+
     FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
     fab.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-        startActivity(new Intent(MainActivity.this,SetAlarmActivity.class));
+        finish();
+        startActivityForResult(new Intent(MainActivity.this,SetAlarmActivity.class),ADD_RECORD);
       }
     });
+
+    alarmModels = sqLiteHelper.getAllAlarmRecords();
+
+    if(alarmModels.size() == 0){
+      Toast.makeText(this, "No alarm set", Toast.LENGTH_SHORT).show();
+    }else{
+      Toast.makeText(this, "Alarm set", Toast.LENGTH_SHORT).show();
+      ListView alarmListView = (ListView) findViewById(R.id.alarmListView);
+      CustomAlarmListAdapter customListAdapter = new CustomAlarmListAdapter(this,alarmModels);
+      alarmListView.setAdapter(customListAdapter);
+    }
 
     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
     fragmentTransaction.add(R.id.weatherFragment_container,new weatherFragment());
     fragmentTransaction.add(R.id.quoteFragment_container,new QuoteFragment());
     fragmentTransaction.commit();
-
-
 
   }
 

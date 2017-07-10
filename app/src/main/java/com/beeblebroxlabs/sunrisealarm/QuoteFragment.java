@@ -24,9 +24,9 @@ public class QuoteFragment extends Fragment {
 
   private OnFragmentInteractionListener mListener;
 
-  public QuoteFragment() {
-    // Required empty public constructor
-  }
+    public QuoteFragment() {
+      // Required empty public constructor
+    }
 
   public static QuoteFragment newInstance() {
     QuoteFragment fragment = new QuoteFragment();
