@@ -21,8 +21,7 @@ import java.util.Set;
 
 public class MainActivity extends AppCompatActivity implements weatherFragment.OnFragmentInteractionListener,QuoteFragment.OnFragmentInteractionListener{
   static final int ADD_RECORD = 1;
-  SQLiteHelper sqLiteHelper = new SQLiteHelper(this);
-  ArrayList<AlarmModel> alarmModels = new ArrayList<AlarmModel>();
+
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -41,20 +40,14 @@ public class MainActivity extends AppCompatActivity implements weatherFragment.O
       }
     });
 
-    alarmModels = sqLiteHelper.getAllAlarmRecords();
 
-    if(alarmModels.size() == 0){
-      Toast.makeText(this, "No alarm set", Toast.LENGTH_SHORT).show();
-    }else{
-      Toast.makeText(this, "Alarm set", Toast.LENGTH_SHORT).show();
-      ListView alarmListView = (ListView) findViewById(R.id.alarmListView);
-      CustomAlarmListAdapter customListAdapter = new CustomAlarmListAdapter(this,alarmModels);
-      alarmListView.setAdapter(customListAdapter);
-    }
+
+
 
     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
     fragmentTransaction.add(R.id.weatherFragment_container,new weatherFragment());
     fragmentTransaction.add(R.id.quoteFragment_container,new QuoteFragment());
+    fragmentTransaction.add(R.id.displayAlarmFragment_container,new AlarmDisplayFragment());
     fragmentTransaction.commit();
 
   }

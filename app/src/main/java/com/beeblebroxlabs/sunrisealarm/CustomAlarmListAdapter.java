@@ -3,6 +3,7 @@ package com.beeblebroxlabs.sunrisealarm;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +19,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import android.widget.TimePicker;
+import com.beeblebroxlabs.sunrisealarm.AlarmDisplayFragment.OnFragmentInteractionListener;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -31,13 +33,23 @@ public class CustomAlarmListAdapter extends ArrayAdapter<AlarmModel> {
 
   private final Activity activity;
   private final ArrayList<AlarmModel> alarmModels;
+  public interface AdapterInterface
+  {
+    void onClick(String value);
+  }
+  AdapterInterface deleteSwitchListener;
 
 
-  public CustomAlarmListAdapter(Activity activity, ArrayList<AlarmModel> alarmModels) {
+
+
+
+  public CustomAlarmListAdapter(Activity activity, ArrayList<AlarmModel> alarmModels,AdapterInterface deleteSwitchListener) {
     super(activity, 0);
     this.activity = activity;
     this.alarmModels = alarmModels;
+    this.deleteSwitchListener  = deleteSwitchListener;
   }
+
 
   @Override
   public int getCount() {
@@ -52,7 +64,9 @@ public class CustomAlarmListAdapter extends ArrayAdapter<AlarmModel> {
     setAlarmSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
       public void onCheckedChanged(CompoundButton buttonView, boolean isSetAlarmSwitchEnabled) {
         if (!isSetAlarmSwitchEnabled) {
-          Log.e("Dialog box","Show Dialog box");
+          Log.e("Delete Switch","CustomAlarmListAdapter");
+          if(deleteSwitchListener != null)
+            deleteSwitchListener.onClick("DeleteAlarm");
         }
       }
     });

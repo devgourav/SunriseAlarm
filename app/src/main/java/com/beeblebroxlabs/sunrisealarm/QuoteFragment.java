@@ -10,11 +10,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import java.util.concurrent.ExecutionException;
 
-/**
- * A simple {@link Fragment} subclass. Activities that contain this fragment must implement the
- * {@link QuoteFragment.OnFragmentInteractionListener} interface to handle interaction events. Use
- * the {@link QuoteFragment#newInstance} factory method to create an instance of this fragment.
- */
 public class QuoteFragment extends Fragment {
   TextView quoteTextView;
   String quoteText;
