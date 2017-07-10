@@ -1,5 +1,6 @@
 package com.beeblebroxlabs.sunrisealarm;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -31,10 +32,9 @@ public class DeleteAlarmDialogFragment extends DialogFragment {
     builder.setMessage("Delete")
         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
           public void onClick(DialogInterface dialog, int id) {
-            sqLiteHelper.deleteRecord(alarmModel);
             Intent intent = new Intent(getContext(),MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
+            getTargetFragment().onActivityResult(getTargetRequestCode(),Activity.RESULT_OK, intent);
+
           }
         })
         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

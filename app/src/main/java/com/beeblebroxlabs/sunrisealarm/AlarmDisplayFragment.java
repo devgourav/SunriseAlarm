@@ -1,6 +1,8 @@
 package com.beeblebroxlabs.sunrisealarm;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -22,6 +24,13 @@ public class AlarmDisplayFragment extends Fragment {
   SQLiteHelper sqLiteHelper;
   ArrayList<AlarmModel> alarmModels = new ArrayList<AlarmModel>();
   FragmentManager fragmentManager = getFragmentManager();
+  public static final int REQUEST_CODE = 100;
+  FragmentManager manager;
+  View displayAlarmView;
+  ListView alarmListView;
+  DeleteAlarmDialogFragment deleteAlarmDialogFragment;
+  String alarmPosition;
+
 
 
   private OnFragmentInteractionListener mListener;
@@ -38,8 +47,6 @@ public class AlarmDisplayFragment extends Fragment {
     super.onCreate(savedInstanceState);
     sqLiteHelper = new SQLiteHelper(getActivity());
     alarmModels = sqLiteHelper.getAllAlarmRecords();
-
-
   }
 
 
@@ -47,26 +54,28 @@ public class AlarmDisplayFragment extends Fragment {
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
-    View displayAlarmView = inflater.inflate(R.layout.fragment_alarm_display, container, false);
-    final FragmentManager manager = getFragmentManager();
+    displayAlarmView = inflater.inflate(R.layout.fragment_alarm_display, container, false);
+    manager = getFragmentManager();
+    deleteAlarmDialogFragment = new DeleteAlarmDialogFragment();
+    deleteAlarmDialogFragment.setTargetFragment(this,REQUEST_CODE);
 
 
     if(alarmModels.size() == 0){
       Toast.makeText(getContext(), "No alarm set", Toast.LENGTH_SHORT).show();
     }else{
       Toast.makeText(getContext(), "Alarm set", Toast.LENGTH_SHORT).show();
-      ListView alarmListView = (ListView)displayAlarmView.findViewById(R.id.alarmListView);
+      alarmListView = (ListView)displayAlarmView.findViewById(R.id.alarmListView);
       AdapterInterface deleteSwitchListener = new AdapterInterface()
       {
         @Override
-        public void onClick(String value)
-        {
-          DeleteAlarmDialogFragment deleteAlarmDialogFragment = new DeleteAlarmDialogFragment();
+        public void onClick(String value) {
+          alarmPosition = value;
           deleteAlarmDialogFragment.show(manager,"DeleteAlarm");
         }
       };
       CustomAlarmListAdapter customListAdapter = new CustomAlarmListAdapter(getActivity(),alarmModels,deleteSwitchListener);
       alarmListView.setAdapter(customListAdapter);
+      System.out.println("Tag:" + alarmListView.getTag());
       return displayAlarmView;
     }
     return null;
@@ -96,5 +105,19 @@ public class AlarmDisplayFragment extends Fragment {
   }
   public interface OnFragmentInteractionListener {
     void onFragmentInteraction(Uri uri);
+  }
+
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    switch(requestCode){
+      case REQUEST_CODE:
+        if(resultCode == Activity.RESULT_OK){
+            sqLiteHelper.deleteRecord(alarmPosition);
+          Intent intent = new Intent(getContext(),MainActivity.class);
+          intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+          startActivity(intent);
+        }break;
+    }
   }
 }

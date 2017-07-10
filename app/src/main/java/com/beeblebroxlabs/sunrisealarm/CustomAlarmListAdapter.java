@@ -39,10 +39,6 @@ public class CustomAlarmListAdapter extends ArrayAdapter<AlarmModel> {
   }
   AdapterInterface deleteSwitchListener;
 
-
-
-
-
   public CustomAlarmListAdapter(Activity activity, ArrayList<AlarmModel> alarmModels,AdapterInterface deleteSwitchListener) {
     super(activity, 0);
     this.activity = activity;
@@ -61,23 +57,23 @@ public class CustomAlarmListAdapter extends ArrayAdapter<AlarmModel> {
     View rowView = inflater.inflate(R.layout.list_alarm, null, true);
     Switch setAlarmSwitch = (Switch) rowView.findViewById(R.id.setAlarmSwitch);
 
-    setAlarmSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
-      public void onCheckedChanged(CompoundButton buttonView, boolean isSetAlarmSwitchEnabled) {
-        if (!isSetAlarmSwitchEnabled) {
-          Log.e("Delete Switch","CustomAlarmListAdapter");
-          if(deleteSwitchListener != null)
-            deleteSwitchListener.onClick("DeleteAlarm");
-        }
-      }
-    });
-
-
-
     String alarmHour = Integer.toString(alarmModels.get(position).getAlarmHour());
     String alarmMinute = Integer.toString(alarmModels.get(position).getAlarmMinute());
 
     setAlarmSwitch.setText(alarmHour + ":" + alarmMinute);
     setAlarmSwitch.setChecked(Boolean.TRUE);
+
+
+    setAlarmSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
+      public void onCheckedChanged(CompoundButton buttonView, boolean isSetAlarmSwitchEnabled) {
+        if (!isSetAlarmSwitchEnabled) {
+          Log.e("Delete Switch","CustomAlarmListAdapter");
+          if(deleteSwitchListener != null)
+            deleteSwitchListener.onClick(alarmModels.get(position).getAlarmId());
+        }
+      }
+    });
+
 
     return rowView;
   }

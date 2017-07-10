@@ -66,15 +66,19 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     database.close();
   }
 
-  public void deleteRecord(AlarmModel alarm) {
+  public void deleteRecord(String alarmId) {
     database = this.getReadableDatabase();
-    database.delete(TABLE_NAME, COLUMN_ALARM_ID + " = ?", new String[]{alarm.getAlarmId()});
+    database.delete(TABLE_NAME, COLUMN_ALARM_ID + " = ?", new String[]{alarmId});
     database.close();
   }
 
   public ArrayList<AlarmModel> getAllAlarmRecords() {
     database = this.getReadableDatabase();
-    Cursor cursor = database.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+    Cursor cursor = database.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " +
+        COLUMN_ALARM_HOUR + " IS NOT NULL OR " +
+        COLUMN_ALARM_HOUR + " = '' OR " +
+        COLUMN_ALARM_MINUTE + " IS NOT NULL OR " +
+        COLUMN_ALARM_MINUTE + "= ''", null);
     ArrayList<AlarmModel> alarms = new ArrayList<AlarmModel>();
     AlarmModel alarmModel;
     if (cursor.getCount() > 0) {
