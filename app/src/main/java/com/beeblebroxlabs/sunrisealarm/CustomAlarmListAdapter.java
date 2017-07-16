@@ -55,7 +55,7 @@ public class CustomAlarmListAdapter extends ArrayAdapter<AlarmModel> {
   public View getView(final int position, View view, ViewGroup parent) {
     LayoutInflater inflater = activity.getLayoutInflater();
     View rowView = inflater.inflate(R.layout.list_alarm, null, true);
-    Switch setAlarmSwitch = (Switch) rowView.findViewById(R.id.setAlarmSwitch);
+    final Switch setAlarmSwitch = (Switch) rowView.findViewById(R.id.setAlarmSwitch);
 
     String alarmHour = Integer.toString(alarmModels.get(position).getAlarmHour());
     String alarmMinute = Integer.toString(alarmModels.get(position).getAlarmMinute());
@@ -67,9 +67,9 @@ public class CustomAlarmListAdapter extends ArrayAdapter<AlarmModel> {
     setAlarmSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
       public void onCheckedChanged(CompoundButton buttonView, boolean isSetAlarmSwitchEnabled) {
         if (!isSetAlarmSwitchEnabled) {
-          Log.e("Delete Switch","CustomAlarmListAdapter");
           if(deleteSwitchListener != null)
             deleteSwitchListener.onClick(alarmModels.get(position).getAlarmId());
+            setAlarmSwitch.setChecked(Boolean.TRUE);
         }
       }
     });

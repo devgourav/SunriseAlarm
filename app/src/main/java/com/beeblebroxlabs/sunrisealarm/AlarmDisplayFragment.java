@@ -1,7 +1,6 @@
 package com.beeblebroxlabs.sunrisealarm;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,18 +11,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 import com.beeblebroxlabs.sunrisealarm.CustomAlarmListAdapter.AdapterInterface;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
+
 
 public class AlarmDisplayFragment extends Fragment {
 
   SQLiteHelper sqLiteHelper;
   ArrayList<AlarmModel> alarmModels = new ArrayList<AlarmModel>();
-  FragmentManager fragmentManager = getFragmentManager();
   public static final int REQUEST_CODE = 100;
   FragmentManager manager;
   View displayAlarmView;
@@ -60,9 +56,9 @@ public class AlarmDisplayFragment extends Fragment {
     deleteAlarmDialogFragment.setTargetFragment(this,REQUEST_CODE);
 
 
-    if(alarmModels.size() == 0){
-      Toast.makeText(getContext(), "No alarm set", Toast.LENGTH_SHORT).show();
-    }else{
+    String noOfAlarmSet = Integer.toString(alarmModels.size());
+    Log.e("NoOfAlarmSet:",noOfAlarmSet);
+    if(!noOfAlarmSet.equals(0)){
       Toast.makeText(getContext(), "Alarm set", Toast.LENGTH_SHORT).show();
       alarmListView = (ListView)displayAlarmView.findViewById(R.id.alarmListView);
       AdapterInterface deleteSwitchListener = new AdapterInterface()

@@ -22,9 +22,10 @@ public class SetAlarmActivity extends AppCompatActivity {
   int alarmMinute;
   Boolean isSunriseTimeEnabledFlag=Boolean.FALSE;
   Boolean isCustomTimeEnabledFlag=Boolean.FALSE;
+  Boolean ispickerTimeEnabledFlag=Boolean.FALSE;
   Switch customSwitch;
   Switch sunriseSwitch;
-  String toastMessage;
+
   PendingIntent alarmPendingIntent;
   AlarmManager alarmManager;
   Calendar alarmTime = Calendar.getInstance();
@@ -45,13 +46,12 @@ public class SetAlarmActivity extends AppCompatActivity {
     pickerTime.setEnabled(Boolean.FALSE);
 
     alarmIntent = new Intent(SetAlarmActivity.this,AlarmReceiver.class);
-
-    EditText alarmLabelText = (EditText)findViewById(R.id.alarmLabelText);
-    alarmLabel = alarmLabelText.getText().toString();
-
-
     alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+    alarmIntent.putExtra("isAlarmSet",Boolean.TRUE);
 
+
+    final EditText alarmLabelText = (EditText)findViewById(R.id.alarmLabelText);
+    alarmLabel = alarmLabelText.getText().toString();
 
 
     sunriseSwitch = (Switch) findViewById(R.id.sunriseTimeToggle);
@@ -64,6 +64,11 @@ public class SetAlarmActivity extends AppCompatActivity {
 
           alarmTime.set(Calendar.HOUR_OF_DAY,alarmHour);
           alarmTime.set(Calendar.MINUTE,alarmHour);
+
+
+          alarmPendingIntent = PendingIntent.getBroadcast(SetAlarmActivity.this,0,
+              alarmIntent,PendingIntent.FLAG_CANCEL_CURRENT);
+          alarmManager.set(AlarmManager.RTC_WAKEUP,alarmTime.getTimeInMillis(),alarmPendingIntent);
 
           if(isCustomTimeEnabledFlag){
             customSwitch.setChecked(Boolean.FALSE);
@@ -92,6 +97,13 @@ public class SetAlarmActivity extends AppCompatActivity {
                   alarmMinute = minute;
                   alarmTime.set(Calendar.HOUR_OF_DAY,alarmHour);
                   alarmTime.set(Calendar.MINUTE,alarmHour);
+                  ispickerTimeEnabledFlag = Boolean.TRUE;
+
+                  alarmPendingIntent = PendingIntent.getBroadcast(getApplicationContext(),0,
+                      alarmIntent,PendingIntent.FLAG_CANCEL_CURRENT);
+                  System.out.println("alarmPendingIntent:"+alarmPendingIntent);
+                  alarmManager.set(AlarmManager.RTC_WAKEUP,alarmTime.getTimeInMillis(),alarmPendingIntent);
+                  System.out.println("AlarmManager:"+alarmTime);
                 }
               }});
           }
@@ -101,6 +113,9 @@ public class SetAlarmActivity extends AppCompatActivity {
         }
       }
     });
+
+
+
 
 
 
@@ -118,7 +133,7 @@ public class SetAlarmActivity extends AppCompatActivity {
     int id = item.getItemId();
 
     if (id == R.id.okButton) {
-      if(!isCustomTimeEnabledFlag && !isSunriseTimeEnabledFlag){
+      if((!isCustomTimeEnabledFlag && !isSunriseTimeEnabledFlag) ||  !ispickerTimeEnabledFlag){
         Toast.makeText(this, "Please select the alarm time.", Toast.LENGTH_SHORT).show();
       }
       else{
