@@ -1,9 +1,14 @@
 package com.beeblebroxlabs.sunrisealarm;
 
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
+
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
@@ -33,6 +38,7 @@ public class CustomAlarmListAdapter extends ArrayAdapter<AlarmModel> {
 
   private final Activity activity;
   private final ArrayList<AlarmModel> alarmModels;
+
   public interface AdapterInterface
   {
     void onClick(String value);
@@ -57,19 +63,29 @@ public class CustomAlarmListAdapter extends ArrayAdapter<AlarmModel> {
     View rowView = inflater.inflate(R.layout.list_alarm, null, true);
     final Switch setAlarmSwitch = (Switch) rowView.findViewById(R.id.setAlarmSwitch);
 
-    String alarmHour = Integer.toString(alarmModels.get(position).getAlarmHour());
-    String alarmMinute = Integer.toString(alarmModels.get(position).getAlarmMinute());
+    int alarmHour = alarmModels.get(position).getAlarmHour();
+    int alarmMinute = alarmModels.get(position).getAlarmMinute();
 
-    setAlarmSwitch.setText(alarmHour + ":" + alarmMinute);
-    setAlarmSwitch.setChecked(Boolean.TRUE);
+    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+    Boolean is24hourClock = sharedPreferences.getBoolean("24hourClock",FALSE);
 
+    System.out.println("is24hourClock:"+is24hourClock);
+
+    if(is24hourClock){
+      setAlarmSwitch.setText(String.format("%02d:%02d", alarmHour, alarmMinute));
+    }else{
+      int alarm12Hour = alarmHour % 12;
+      setAlarmSwitch.setText(String.format("%02d:%02d %s", alarm12Hour, alarmMinute,
+          alarmHour < 12 ? "am" : "pm"));
+    }
+    setAlarmSwitch.setChecked(TRUE);
 
     setAlarmSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
       public void onCheckedChanged(CompoundButton buttonView, boolean isSetAlarmSwitchEnabled) {
         if (!isSetAlarmSwitchEnabled) {
           if(deleteSwitchListener != null)
             deleteSwitchListener.onClick(alarmModels.get(position).getAlarmId());
-            setAlarmSwitch.setChecked(Boolean.TRUE);
+            setAlarmSwitch.setChecked(TRUE);
         }
       }
     });

@@ -59,7 +59,6 @@ public class AlarmDisplayFragment extends Fragment {
     String noOfAlarmSet = Integer.toString(alarmModels.size());
     Log.e("NoOfAlarmSet:",noOfAlarmSet);
     if(!noOfAlarmSet.equals(0)){
-      Toast.makeText(getContext(), "Alarm set", Toast.LENGTH_SHORT).show();
       alarmListView = (ListView)displayAlarmView.findViewById(R.id.alarmListView);
       AdapterInterface deleteSwitchListener = new AdapterInterface()
       {

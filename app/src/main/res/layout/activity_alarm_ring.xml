@@ -15,7 +15,7 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:keepScreenOn="true"
-    android:text="10:30 am"
+    android:text="17:99 pm"
     android:textColor="#33b5e5"
     android:textSize="50sp" />
 
@@ -37,13 +37,13 @@
       tools:ignore="UselessParent">
 
       <Button
-        android:text="Silent"
+        android:text="Silence"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/silentButton"
-        android:layout_weight="1" />
+        android:layout_weight="18" />
       <Button
-        android:text="Snooze"
+        android:text="Snooze for 10 minutes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/snoozeButton"

@@ -3,6 +3,7 @@ package com.beeblebroxlabs.sunrisealarm;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.provider.CalendarContract.CalendarAlerts;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -29,10 +30,10 @@ public class SetAlarmActivity extends AppCompatActivity {
   PendingIntent alarmPendingIntent;
   AlarmManager alarmManager;
   Calendar alarmTime = Calendar.getInstance();
-  Intent alarmIntent;
 
+  Intent alarmIntent;
   AlarmModel alarmModel = new AlarmModel();
-  SQLiteHelper sqLiteHelper = new SQLiteHelper(this);
+
 
 
 
@@ -47,7 +48,7 @@ public class SetAlarmActivity extends AppCompatActivity {
 
     alarmIntent = new Intent(SetAlarmActivity.this,AlarmReceiver.class);
     alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-    alarmIntent.putExtra("isAlarmSet",Boolean.TRUE);
+
 
 
     final EditText alarmLabelText = (EditText)findViewById(R.id.alarmLabelText);
@@ -64,11 +65,6 @@ public class SetAlarmActivity extends AppCompatActivity {
 
           alarmTime.set(Calendar.HOUR_OF_DAY,alarmHour);
           alarmTime.set(Calendar.MINUTE,alarmHour);
-
-
-          alarmPendingIntent = PendingIntent.getBroadcast(SetAlarmActivity.this,0,
-              alarmIntent,PendingIntent.FLAG_CANCEL_CURRENT);
-          alarmManager.set(AlarmManager.RTC_WAKEUP,alarmTime.getTimeInMillis(),alarmPendingIntent);
 
           if(isCustomTimeEnabledFlag){
             customSwitch.setChecked(Boolean.FALSE);
@@ -96,14 +92,8 @@ public class SetAlarmActivity extends AppCompatActivity {
                   alarmHour = hourOfDay;
                   alarmMinute = minute;
                   alarmTime.set(Calendar.HOUR_OF_DAY,alarmHour);
-                  alarmTime.set(Calendar.MINUTE,alarmHour);
+                  alarmTime.set(Calendar.MINUTE,alarmMinute);
                   ispickerTimeEnabledFlag = Boolean.TRUE;
-
-                  alarmPendingIntent = PendingIntent.getBroadcast(getApplicationContext(),0,
-                      alarmIntent,PendingIntent.FLAG_CANCEL_CURRENT);
-                  System.out.println("alarmPendingIntent:"+alarmPendingIntent);
-                  alarmManager.set(AlarmManager.RTC_WAKEUP,alarmTime.getTimeInMillis(),alarmPendingIntent);
-                  System.out.println("AlarmManager:"+alarmTime);
                 }
               }});
           }
@@ -113,11 +103,6 @@ public class SetAlarmActivity extends AppCompatActivity {
         }
       }
     });
-
-
-
-
-
 
 
   }
@@ -131,6 +116,8 @@ public class SetAlarmActivity extends AppCompatActivity {
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     int id = item.getItemId();
+    SQLiteHelper sqLiteHelper = new SQLiteHelper(this);
+    String alarmId;
 
     if (id == R.id.okButton) {
       if((!isCustomTimeEnabledFlag && !isSunriseTimeEnabledFlag) ||  !ispickerTimeEnabledFlag){
@@ -140,8 +127,19 @@ public class SetAlarmActivity extends AppCompatActivity {
         alarmModel.setAlarmLabel(alarmLabel);
         alarmModel.setAlarmHour(alarmHour);
         alarmModel.setAlarmMinute(alarmMinute);
+        alarmId = sqLiteHelper.insertAlarmRecord(alarmModel);
 
-        sqLiteHelper.insertAlarmRecord(alarmModel);
+
+
+        alarmIntent.putExtra("alarmHour",alarmHour);
+        alarmIntent.putExtra("alarmMinute",alarmMinute);
+        alarmIntent.putExtra("isAlarmSet",Boolean.TRUE);
+        alarmIntent.putExtra("alarmId",alarmId);
+
+
+        alarmPendingIntent = PendingIntent.getBroadcast(SetAlarmActivity.this,0,
+            alarmIntent,PendingIntent.FLAG_CANCEL_CURRENT);
+        alarmManager.set(AlarmManager.RTC_WAKEUP,alarmTime.getTimeInMillis(),alarmPendingIntent);
 
 
         Intent intent = new Intent(SetAlarmActivity.this, MainActivity.class);

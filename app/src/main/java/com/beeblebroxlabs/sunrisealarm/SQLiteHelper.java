@@ -46,14 +46,16 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     onCreate(db);
   }
 
-  public void insertAlarmRecord(AlarmModel alarm) {
+  public String insertAlarmRecord(AlarmModel alarm) {
     database = this.getReadableDatabase();
     ContentValues contentValues = new ContentValues();
     contentValues.put(COLUMN_ALARM_LABEL,alarm.getAlarmLabel());
     contentValues.put(COLUMN_ALARM_HOUR,alarm.getAlarmHour());
     contentValues.put(COLUMN_ALARM_MINUTE,alarm.getAlarmMinute());
-    database.insert(TABLE_NAME, null, contentValues);
+    long primaryId = database.insert(TABLE_NAME, null, contentValues);
     database.close();
+
+    return Long.toString(primaryId);
   }
 
   public void updateAlarmRecord(AlarmModel alarm) {

@@ -1,6 +1,10 @@
 package com.beeblebroxlabs.sunrisealarm;
 
 
+import static android.widget.TextClock.DEFAULT_FORMAT_24_HOUR;
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
+
 import android.net.Uri;
 import android.provider.SyncStateContract.Constants;
 import android.support.v4.app.FragmentManager;
@@ -15,12 +19,15 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
+import android.widget.TextClock;
 import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity implements weatherFragment.OnFragmentInteractionListener,QuoteFragment.OnFragmentInteractionListener{
   static final int ADD_RECORD = 1;
+  TextClock clockText;
+  Boolean is12hourClock = TRUE;
 
 
   @Override
@@ -29,6 +36,15 @@ public class MainActivity extends AppCompatActivity implements weatherFragment.O
     setContentView(R.layout.activity_main);
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
+
+    clockText = (TextClock)findViewById(R.id.clockText);
+
+    if(is12hourClock){
+      clockText.setFormat12Hour("h:mm aa");
+    }else{
+      clockText.setFormat24Hour("k:mm");
+    }
+
 
 
     FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
