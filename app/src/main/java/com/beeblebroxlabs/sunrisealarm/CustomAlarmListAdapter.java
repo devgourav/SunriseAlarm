@@ -69,8 +69,6 @@ public class CustomAlarmListAdapter extends ArrayAdapter<AlarmModel> {
     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
     Boolean is24hourClock = sharedPreferences.getBoolean("24hourClock",FALSE);
 
-    System.out.println("is24hourClock:"+is24hourClock);
-
     if(is24hourClock){
       setAlarmSwitch.setText(String.format("%02d:%02d", alarmHour, alarmMinute));
     }else{

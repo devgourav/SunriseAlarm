@@ -29,63 +29,65 @@ public class FetchWeatherDataTask extends AsyncTask<String,Void,String>{
   InputStream inputStream;
   InputStreamReader inputStreamReader;
   String weatherJsonResponse = "";
+
   String weatherDetails = "";
+  String cityName = "";
 
   @Override
   protected String doInBackground(String... urls) {
-//    try {
-//      url = new URL(urls[0]);
-//      httpURLConnection = (HttpURLConnection)url.openConnection();
-//
-//      //Set methods and timeouts
-//      httpURLConnection.setRequestMethod(REQUEST_METHOD);
-//      httpURLConnection.setReadTimeout(READ_TIMEOUT);
-//      httpURLConnection.setConnectTimeout(CONNECTION_TIMEOUT);
-//
-//      httpURLConnection.connect();
-//      System.out.println("Weather API Response:" + httpURLConnection.getResponseCode() + httpURLConnection.getResponseMessage());
-//
-//
-//      inputStream = httpURLConnection.getInputStream();
-//      inputStreamReader = new InputStreamReader(inputStream);
-//
-//      int data = inputStreamReader.read();
-//      while(data!=-1){
-//        char currentChar = (char)data;
-//        weatherJsonResponse += currentChar;
-//        data = inputStreamReader.read();
-//      }
-//      inputStream.close();
-//      inputStreamReader.close();
-//      try {
-//        JSONObject weatherJsonObject = new JSONObject(weatherJsonResponse);
-//
-//
-//        JSONObject weatherDescriptionObject = new JSONArray(
-//            weatherJsonObject.getString("weather")).getJSONObject(0);
-//        String weatherDescription = weatherDescriptionObject.getString("main");
-//
-//
-//        JSONObject weatherTemperatureObject = weatherJsonObject.getJSONObject("main");
-//        int weatherMainTemp = weatherTemperatureObject.getInt("temp");
-//        weatherMainTemp = weatherMainTemp + KELVIN_CONST;
-//
-//
-//        weatherDetails = weatherDescription + Integer.toString(weatherMainTemp) +DEGREE+"c";
-//        System.out.println("weatherDetails:" + weatherDetails);
-//
-//      } catch (JSONException e) {
-//        e.printStackTrace();
-//      }
-//      return weatherDetails;
-//    } catch (MalformedURLException e) {
-//      e.printStackTrace();
-//    } catch (IOException e) {
-//      e.printStackTrace();
-//    }
-//    return null;
+    try {
+      url = new URL(urls[0]);
+      httpURLConnection = (HttpURLConnection)url.openConnection();
 
-    return "Clouds 29C";
+      //Set methods and timeouts
+      httpURLConnection.setRequestMethod(REQUEST_METHOD);
+      httpURLConnection.setReadTimeout(READ_TIMEOUT);
+      httpURLConnection.setConnectTimeout(CONNECTION_TIMEOUT);
+
+      httpURLConnection.connect();
+      System.out.println("Weather API Response:" + httpURLConnection.getResponseCode() + httpURLConnection.getResponseMessage());
+
+
+      inputStream = httpURLConnection.getInputStream();
+      inputStreamReader = new InputStreamReader(inputStream);
+
+      int data = inputStreamReader.read();
+      while(data!=-1){
+        char currentChar = (char)data;
+        weatherJsonResponse += currentChar;
+        data = inputStreamReader.read();
+      }
+      inputStream.close();
+      inputStreamReader.close();
+      try {
+        JSONObject weatherJsonObject = new JSONObject(weatherJsonResponse);
+
+
+        JSONObject weatherDescriptionObject = new JSONArray(
+            weatherJsonObject.getString("weather")).getJSONObject(0);
+        String weatherDescription = weatherDescriptionObject.getString("main");
+
+
+        JSONObject weatherTemperatureObject = weatherJsonObject.getJSONObject("main");
+        int weatherMainTemp = weatherTemperatureObject.getInt("temp");
+        weatherMainTemp = weatherMainTemp + KELVIN_CONST;
+
+        cityName = weatherJsonObject.getString("name");
+
+
+        weatherDetails = cityName + " " + weatherDescription + Integer.toString(weatherMainTemp) +DEGREE+"c";
+        System.out.println("weatherDetails:" + weatherDetails);
+
+      } catch (JSONException e) {
+        e.printStackTrace();
+      }
+      return weatherDetails;
+    } catch (MalformedURLException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return null;
   }
 
   @Override

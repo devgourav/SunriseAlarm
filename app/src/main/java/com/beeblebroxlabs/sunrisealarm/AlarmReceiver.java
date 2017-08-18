@@ -40,7 +40,6 @@ public class AlarmReceiver extends BroadcastReceiver {
     }
 
   }
-
   public static String bundleToString(Bundle bundle) {
     StringBuilder out = new StringBuilder("Bundle[");
 
