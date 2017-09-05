@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 import java.util.ArrayList;
 
 /**
@@ -22,6 +23,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
   public static final String COLUMN_ALARM_LABEL = "ALARM_LABEL";
   public static final String COLUMN_ALARM_HOUR = "ALARM_HOUR";
   public static final String COLUMN_ALARM_MINUTE = "ALARM_MINUTE";
+  public static final String COLUMN_IS_ALARM_ENABLED = "IS_ALARM_ENABLED";
 
   private SQLiteDatabase database;
 
@@ -36,7 +38,8 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         " ( " + COLUMN_ALARM_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
         COLUMN_ALARM_LABEL + " VARCHAR, " +
         COLUMN_ALARM_HOUR + " INTEGER, " +
-        COLUMN_ALARM_MINUTE + " INTEGER);");
+        COLUMN_ALARM_MINUTE + " INTEGER, "+
+        COLUMN_IS_ALARM_ENABLED + " BOOLEAN);");
 
   }
 
@@ -52,6 +55,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     contentValues.put(COLUMN_ALARM_LABEL,alarm.getAlarmLabel());
     contentValues.put(COLUMN_ALARM_HOUR,alarm.getAlarmHour());
     contentValues.put(COLUMN_ALARM_MINUTE,alarm.getAlarmMinute());
+    contentValues.put(COLUMN_IS_ALARM_ENABLED,alarm.getAlarmEnabled());
     long primaryId = database.insert(TABLE_NAME, null, contentValues);
     database.close();
 
@@ -64,6 +68,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     contentValues.put(COLUMN_ALARM_LABEL,alarm.getAlarmLabel());
     contentValues.put(COLUMN_ALARM_HOUR,alarm.getAlarmHour());
     contentValues.put(COLUMN_ALARM_MINUTE,alarm.getAlarmMinute());
+    contentValues.put(COLUMN_IS_ALARM_ENABLED,alarm.getAlarmEnabled());
     database.update(TABLE_NAME, contentValues, COLUMN_ALARM_ID + " = ?", new String[]{alarm.getAlarmId()});
     database.close();
   }
@@ -72,6 +77,29 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     database = this.getReadableDatabase();
     database.delete(TABLE_NAME, COLUMN_ALARM_ID + " = ?", new String[]{alarmId});
     database.close();
+  }
+
+  public  AlarmModel getAlarmRecord(String alarmId){
+    database = this.getReadableDatabase();
+    Cursor cursor = database.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " +
+        COLUMN_ALARM_ID + "=" + alarmId,null);
+
+    AlarmModel  alarmModel = new AlarmModel();
+    if (cursor.getCount() > 0) {
+      for (int i = 0; i < cursor.getCount(); i++) {
+        cursor.moveToNext();
+        alarmModel.setAlarmId(cursor.getString(0));
+        alarmModel.setAlarmLabel(cursor.getString(1));
+        alarmModel.setAlarmHour(cursor.getInt(2));
+        alarmModel.setAlarmMinute(cursor.getInt(3));
+        alarmModel.setAlarmEnabled(Boolean.getBoolean(cursor.getString(4)));
+      }
+    }else{
+      Log.e("No alarm found:",alarmId);
+    }
+    cursor.close();
+    database.close();
+    return alarmModel;
   }
 
   public ArrayList<AlarmModel> getAllAlarmRecords() {
@@ -91,6 +119,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         alarmModel.setAlarmLabel(cursor.getString(1));
         alarmModel.setAlarmHour(cursor.getInt(2));
         alarmModel.setAlarmMinute(cursor.getInt(3));
+        alarmModel.setAlarmEnabled(Boolean.getBoolean(cursor.getString(4)));
         alarms.add(alarmModel);
       }
     }

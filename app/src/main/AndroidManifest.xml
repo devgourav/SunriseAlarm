@@ -12,6 +12,7 @@
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
   <uses-feature android:name="android.hardware.location.network" />
   <uses-feature android:name="android.hardware.location.gps" />
+  <uses-permission android:name="android.permission.VIBRATE"/>
 
 
   <application
@@ -23,7 +24,8 @@
     <activity
       android:label="@string/app_name"
       android:name=".MainActivity"
-      android:theme="@style/AppTheme.NoActionBar">
+      android:theme="@style/AppTheme.NoActionBar"
+      android:finishOnTaskLaunch="true">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
 
@@ -49,6 +51,7 @@
       android:configChanges="orientation|keyboardHidden|screenSize"
       android:label="@string/title_activity_alarm_ring"
       android:name=".AlarmRingActivity"
+      android:showOnLockScreen="true"
       android:theme="@style/FullscreenTheme" />
     <activity
       android:label="@string/title_activity_settings"

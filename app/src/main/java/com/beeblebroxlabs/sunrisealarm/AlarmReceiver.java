@@ -16,16 +16,16 @@ public class AlarmReceiver extends BroadcastReceiver {
 
   @Override
   public void onReceive(Context context, Intent intent) {
-    Log.e("AlarmReceiver:","onReceive");
-    System.out.println("intent Extras:" + bundleToString(intent.getExtras()));
+
+    //System.out.println("intent Extras:" + bundleToString(intent.getExtras()));
     Bundle extras = intent.getExtras();
 
-    //Prepare the intent for AlarmRingActivity
+
     Intent alarmRingScreenIntent = new Intent(context,AlarmRingActivity.class);
     alarmRingScreenIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     alarmRingScreenIntent.putExtras(extras);
 
-    //Prepare the intent for AlarmRingtonePlayingService
+
     Intent alarmRingtoneServiceIntent = new Intent(context, AlarmRingtonePlayingService.class);
     alarmRingtoneServiceIntent.putExtras(extras);
 
@@ -40,53 +40,53 @@ public class AlarmReceiver extends BroadcastReceiver {
     }
 
   }
-  public static String bundleToString(Bundle bundle) {
-    StringBuilder out = new StringBuilder("Bundle[");
-
-    if (bundle == null) {
-      out.append("null");
-    } else {
-      boolean first = true;
-      for (String key : bundle.keySet()) {
-        if (!first) {
-          out.append(", ");
-        }
-
-        out.append(key).append('=');
-
-        Object value = bundle.get(key);
-
-        if (value instanceof int[]) {
-          out.append(Arrays.toString((int[]) value));
-        } else if (value instanceof byte[]) {
-          out.append(Arrays.toString((byte[]) value));
-        } else if (value instanceof boolean[]) {
-          out.append(Arrays.toString((boolean[]) value));
-        } else if (value instanceof short[]) {
-          out.append(Arrays.toString((short[]) value));
-        } else if (value instanceof long[]) {
-          out.append(Arrays.toString((long[]) value));
-        } else if (value instanceof float[]) {
-          out.append(Arrays.toString((float[]) value));
-        } else if (value instanceof double[]) {
-          out.append(Arrays.toString((double[]) value));
-        } else if (value instanceof String[]) {
-          out.append(Arrays.toString((String[]) value));
-        } else if (value instanceof CharSequence[]) {
-          out.append(Arrays.toString((CharSequence[]) value));
-        } else if (value instanceof Parcelable[]) {
-          out.append(Arrays.toString((Parcelable[]) value));
-        } else if (value instanceof Bundle) {
-          out.append(bundleToString((Bundle) value));
-        } else {
-          out.append(value);
-        }
-
-        first = false;
-      }
-    }
-
-    out.append("]");
-    return out.toString();
-  }
+//  public static String bundleToString(Bundle bundle) {
+//    StringBuilder out = new StringBuilder("Bundle[");
+//
+//    if (bundle == null) {
+//      out.append("null");
+//    } else {
+//      boolean first = true;
+//      for (String key : bundle.keySet()) {
+//        if (!first) {
+//          out.append(", ");
+//        }
+//
+//        out.append(key).append('=');
+//
+//        Object value = bundle.get(key);
+//
+//        if (value instanceof int[]) {
+//          out.append(Arrays.toString((int[]) value));
+//        } else if (value instanceof byte[]) {
+//          out.append(Arrays.toString((byte[]) value));
+//        } else if (value instanceof boolean[]) {
+//          out.append(Arrays.toString((boolean[]) value));
+//        } else if (value instanceof short[]) {
+//          out.append(Arrays.toString((short[]) value));
+//        } else if (value instanceof long[]) {
+//          out.append(Arrays.toString((long[]) value));
+//        } else if (value instanceof float[]) {
+//          out.append(Arrays.toString((float[]) value));
+//        } else if (value instanceof double[]) {
+//          out.append(Arrays.toString((double[]) value));
+//        } else if (value instanceof String[]) {
+//          out.append(Arrays.toString((String[]) value));
+//        } else if (value instanceof CharSequence[]) {
+//          out.append(Arrays.toString((CharSequence[]) value));
+//        } else if (value instanceof Parcelable[]) {
+//          out.append(Arrays.toString((Parcelable[]) value));
+//        } else if (value instanceof Bundle) {
+//          out.append(bundleToString((Bundle) value));
+//        } else {
+//          out.append(value);
+//        }
+//
+//        first = false;
+//      }
+//    }
+//
+//    out.append("]");
+//    return out.toString();
+//  }
 }

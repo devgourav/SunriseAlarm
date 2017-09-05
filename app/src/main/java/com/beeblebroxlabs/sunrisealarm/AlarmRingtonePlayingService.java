@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
+import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.media.audiofx.BassBoost.Settings;
 import android.net.Uri;
@@ -30,7 +31,7 @@ import java.security.Permission;
 
 public class AlarmRingtonePlayingService extends Service {
 
-  MediaPlayer mediaPlayer;
+  private MediaPlayer mediaPlayer;
   private boolean mRunning;
   @Nullable
   @Override
@@ -46,17 +47,13 @@ public class AlarmRingtonePlayingService extends Service {
   }
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
-    String alarmPath;
     mediaPlayer = new MediaPlayer();
 
     if(!mRunning && intent.getExtras().getBoolean("isAlarmSet")){
-
       if(intent.getExtras().getString("alarmTone")!=null){
-        alarmPath = intent.getExtras().getString("alarmTone");
-        Log.e("alarmPath1:",alarmPath);
+        String alarmPath = intent.getExtras().getString("alarmTone");
         Uri uri = Uri.parse(alarmPath);
         alarmPath = getRingtonePathFromContentUri(getApplicationContext(), uri);
-        Log.e("alarmPath2:",alarmPath);
         try {
           mediaPlayer.setDataSource(alarmPath);
           mediaPlayer.setLooping(TRUE);
@@ -71,10 +68,22 @@ public class AlarmRingtonePlayingService extends Service {
           e.printStackTrace();
         }
       }
-
       else{
-        mediaPlayer.create(this, System.DEFAULT_ALARM_ALERT_URI);
-        mediaPlayer.start();
+
+        Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+        try {
+          mediaPlayer.setDataSource(this,uri);
+          mediaPlayer.setLooping(TRUE);
+          mediaPlayer.prepareAsync();
+          mediaPlayer.setOnPreparedListener(new OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+              mediaPlayer.start();
+            }
+          });
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
       }
     }
 
@@ -88,6 +97,8 @@ public class AlarmRingtonePlayingService extends Service {
     mediaPlayer.reset();
 
   }
+
+  //Change System generated path to the actual media path
   public static String getRingtonePathFromContentUri(Context context,
       Uri contentUri) {
     String[] proj = { MediaStore.Audio.Media.DATA };

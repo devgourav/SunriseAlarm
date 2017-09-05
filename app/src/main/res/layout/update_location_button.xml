@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <Button
+  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:text="Update location"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/updateLocationButton"
+    android:background="#fff"
+    android:padding="12dp"
+    android:fontFamily="sans-serif-condensed">
+  </Button>

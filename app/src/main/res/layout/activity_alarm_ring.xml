@@ -2,7 +2,7 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:background="#0099cc"
+  android:background="#fff"
   tools:context="com.beeblebroxlabs.sunrisealarm.AlarmRingActivity">
 
   <!-- The primary full-screen view. This can be replaced with whatever view
@@ -10,14 +10,15 @@
          TextureView, etc. -->
   <TextView
     android:id="@+id/ringAlarmLabel"
-    android:text="Text View"
+    android:text=""
     android:gravity="center"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="20sp"
     android:layout_marginTop="80sp"
-    android:textColor="#33b5e5"
-    android:textSize="30sp" />
+    android:textColor="#111"
+    android:textSize="30sp"
+    android:fontFamily="sans-serif-condensed"/>
 
   <TextView
     android:id="@+id/ringClockText"
@@ -26,9 +27,9 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:keepScreenOn="true"
-    android:text="17:99 pm"
-    android:textColor="#33b5e5"
+    android:text=""
     android:textSize="50sp"
+    android:fontFamily="sans-serif-condensed"
     android:layout_marginTop="20sp"
     android:layout_below="@+id/ringAlarmLabel"/>
 
@@ -40,28 +41,27 @@
     android:fitsSystemWindows="true">
 
     <LinearLayout
-      android:id="@+id/fullscreen_content_controls"
-      style="?metaButtonBarStyle"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_gravity="bottom|center_horizontal"
-      android:background="@color/black_overlay"
+      android:layout_height="50dp"
       android:orientation="horizontal"
-      tools:ignore="UselessParent">
-
+      android:layout_gravity="bottom|center_horizontal"
+      android:weightSum="2.0">
       <Button
-        android:text="Silence"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/silentButton"
-        android:layout_weight="18" />
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:fontFamily="sans-serif-condensed"
+        android:text="Stop Alarm"/>
       <Button
-        android:text="Snooze for 10 minutes"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/snoozeButton"
-        android:layout_weight="1" />
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:fontFamily="sans-serif-condensed"
+        android:text="Snooze for 10 minutes"/>
     </LinearLayout>
+
   </FrameLayout>
 
 </FrameLayout>

@@ -8,13 +8,16 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
@@ -38,18 +41,23 @@ public class CustomAlarmListAdapter extends ArrayAdapter<AlarmModel> {
 
   private final Activity activity;
   private final ArrayList<AlarmModel> alarmModels;
+  Boolean isMilitaryTimeFormat = FALSE;
 
-  public interface AdapterInterface
+  public interface CustomSwitchListenerInterface
   {
     void onClick(String value);
   }
-  AdapterInterface deleteSwitchListener;
+  CustomSwitchListenerInterface deleteSwitchListener;
 
-  public CustomAlarmListAdapter(Activity activity, ArrayList<AlarmModel> alarmModels,AdapterInterface deleteSwitchListener) {
+  CustomSwitchListenerInterface disableSwitchListener;
+
+  public CustomAlarmListAdapter(Activity activity, ArrayList<AlarmModel> alarmModels,
+      CustomSwitchListenerInterface deleteSwitchListener,CustomSwitchListenerInterface disableSwitchListener) {
     super(activity, 0);
     this.activity = activity;
     this.alarmModels = alarmModels;
     this.deleteSwitchListener  = deleteSwitchListener;
+    this.disableSwitchListener  = disableSwitchListener;
   }
 
 
@@ -67,29 +75,85 @@ public class CustomAlarmListAdapter extends ArrayAdapter<AlarmModel> {
     int alarmMinute = alarmModels.get(position).getAlarmMinute();
 
     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-    Boolean is24hourClock = sharedPreferences.getBoolean("24hourClock",FALSE);
+    isMilitaryTimeFormat = sharedPreferences.getBoolean("24hourClock",FALSE);
 
-    if(is24hourClock){
-      setAlarmSwitch.setText(String.format("%02d:%02d", alarmHour, alarmMinute));
-    }else{
-      int alarm12Hour = alarmHour % 12;
-      setAlarmSwitch.setText(String.format("%02d:%02d %s", alarm12Hour, alarmMinute,
-          alarmHour < 12 ? "am" : "pm"));
+    String formattedTime = checkTimeFormat(alarmHour,alarmMinute);
+    Calendar calendar = Calendar.getInstance();
+    Calendar alarmCalendar = Calendar.getInstance();
+    alarmCalendar.set(Calendar.HOUR_OF_DAY,alarmHour);
+    alarmCalendar.set(Calendar.MINUTE,alarmMinute);
+
+
+
+    long hourInMillis = 1000*60*60;
+    long minuteInMillis = 1000*60;
+    long alarmTimeInMillis = alarmCalendar.getTimeInMillis();
+    long currentTimeInMillis = calendar.getTimeInMillis();
+    long timeDifference;
+    long hourLeft;
+    long minuteLeft;
+
+
+
+    if(alarmTimeInMillis>=currentTimeInMillis){
+      timeDifference = alarmTimeInMillis-currentTimeInMillis;
     }
+    else{
+      alarmCalendar.add(Calendar.DATE,1);
+      alarmTimeInMillis = alarmCalendar.getTimeInMillis();
+      timeDifference = alarmTimeInMillis-currentTimeInMillis;
+    }
+
+    hourLeft = timeDifference/hourInMillis;
+    timeDifference = timeDifference%hourInMillis;
+    minuteLeft = timeDifference/minuteInMillis;
+
+
+
+    String timeRemaining = " Alarm in "+hourLeft+" hours "+minuteLeft+" minutes";
+
+
+    setAlarmSwitch.setText(formattedTime+timeRemaining);
     setAlarmSwitch.setChecked(TRUE);
 
     setAlarmSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
       public void onCheckedChanged(CompoundButton buttonView, boolean isSetAlarmSwitchEnabled) {
         if (!isSetAlarmSwitchEnabled) {
-          if(deleteSwitchListener != null)
-            deleteSwitchListener.onClick(alarmModels.get(position).getAlarmId());
-            setAlarmSwitch.setChecked(TRUE);
+          if(disableSwitchListener != null){
+            disableSwitchListener.onClick(alarmModels.get(position).getAlarmId());
+            setAlarmSwitch.setChecked(FALSE);
+          }
+        }else{
+          setAlarmSwitch.setChecked(TRUE);
         }
       }
     });
 
-
+    setAlarmSwitch.setOnLongClickListener(new OnLongClickListener() {
+      @Override
+      public boolean onLongClick(View v) {
+          if(deleteSwitchListener != null){
+            deleteSwitchListener.onClick(alarmModels.get(position).getAlarmId());
+            setAlarmSwitch.setChecked(TRUE);
+            Vibrator vibrator = (Vibrator)activity.getSystemService(Context.VIBRATOR_SERVICE);
+            vibrator.vibrate(200);
+          }
+        return false;
+      }
+    });
     return rowView;
+  }
+
+
+
+
+  public String checkTimeFormat(int alarmHour,int alarmMinute){
+    if(isMilitaryTimeFormat){
+      return String.format("%02d:%02d", alarmHour, alarmMinute);
+    }else{
+      return String.format("%02d:%02d %s", alarmHour % 12, alarmMinute,
+          alarmHour < 12 ? "am" : "pm");
+    }
   }
 }
 

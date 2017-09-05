@@ -5,26 +5,33 @@ package com.beeblebroxlabs.sunrisealarm;
  */
 
 public class AlarmModel {
-  private String alarmLabel,alarmId;
-  private int alarmHour,alarmMinute;
+
+  private String alarmLabel, alarmId;
+  private int alarmHour, alarmMinute;
+  private Boolean isAlarmEnabled;
 
   public String getAlarmLabel() {
+
     return alarmLabel;
   }
 
   public void setAlarmLabel(String alarmLabel) {
+
     this.alarmLabel = alarmLabel;
   }
 
   public String getAlarmId() {
+
     return alarmId;
   }
 
   public void setAlarmId(String alarmId) {
+
     this.alarmId = alarmId;
   }
 
   public int getAlarmHour() {
+    
     return alarmHour;
   }
 
@@ -38,5 +45,13 @@ public class AlarmModel {
 
   public void setAlarmMinute(int alarmMinute) {
     this.alarmMinute = alarmMinute;
+  }
+
+  public Boolean getAlarmEnabled() {
+    return isAlarmEnabled;
+  }
+
+  public void setAlarmEnabled(Boolean alarmEnabled) {
+    isAlarmEnabled = alarmEnabled;
   }
 }

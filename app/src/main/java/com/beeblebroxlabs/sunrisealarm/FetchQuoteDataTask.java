@@ -22,28 +22,22 @@ public class FetchQuoteDataTask extends AsyncTask<String,Void,String>{
   public static final int READ_TIMEOUT = 15000;
   public static final int CONNECTION_TIMEOUT = 15000;
 
-  URL url;
-  HttpURLConnection httpURLConnection;
-  InputStream inputStream;
-  InputStreamReader inputStreamReader;
-  String quoteJsonResponse = "";
-  String quote = "";
+  String quoteJsonResponse = "",quote = "";;
+
 
   @Override
   protected String doInBackground(String... urls) {
 //    try {
-//      url = new URL(urls[0]);
-//      httpURLConnection = (HttpURLConnection)url.openConnection();
+//      URL url = new URL(urls[0]);
+//      HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
 //
 //      //Set methods and timeouts
 //      httpURLConnection.setRequestMethod(REQUEST_METHOD);
 //      httpURLConnection.setReadTimeout(READ_TIMEOUT);
 //      httpURLConnection.setConnectTimeout(CONNECTION_TIMEOUT);
 //
-//      System.out.println("Quote API Response Code:" + httpURLConnection.getResponseCode() + httpURLConnection.getResponseMessage());
-//
-//      inputStream = httpURLConnection.getInputStream();
-//      inputStreamReader = new InputStreamReader(inputStream);
+//      InputStream inputStream = httpURLConnection.getInputStream();
+//      InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
 //
 //      int data = inputStreamReader.read();
 //      while(data!=-1){
@@ -55,18 +49,13 @@ public class FetchQuoteDataTask extends AsyncTask<String,Void,String>{
 //      inputStreamReader.close();
 //      try {
 //        JSONObject quoteJsonObject = new JSONObject(quoteJsonResponse);
-//
 //        String quoteContents = quoteJsonObject.getString("contents");
 //        JSONObject quoteContentJsonObject = new JSONObject(quoteContents);
-//
-//
 //        JSONObject quoteObject = new JSONArray(
 //            quoteContentJsonObject.getString("quotes")).getJSONObject(0);
 //
 //        quote = quoteObject.getString("quote");
 //
-//
-//        System.out.println("quoteTask:" + quote);
 //
 //      } catch (JSONException e) {
 //        e.printStackTrace();
@@ -79,7 +68,7 @@ public class FetchQuoteDataTask extends AsyncTask<String,Void,String>{
 //    }
 //    return null;
 
-    return "\"Do not be afraid to give up the good for the great...Be Awesome\"";
+    return "\"Do not be afraid to give up the good for the great.\"";
   }
 
   @Override

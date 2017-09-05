@@ -44,14 +44,7 @@ public class FetchLocationDataTask extends AsyncTask<Void,Void,Location> {
       mFusedLocationClient.getLastLocation()
           .addOnSuccessListener(new OnSuccessListener<Location>() {
             public void onSuccess(Location location) {
-              if (location != null) {
-                System.out.println("location is not null:" + location.toString());
-                currentLocation = location;
-
-              } else {
-                currentLocation = null;
-                System.out.println("Location is null.");
-              }
+              currentLocation = location;
             }
           });
     }

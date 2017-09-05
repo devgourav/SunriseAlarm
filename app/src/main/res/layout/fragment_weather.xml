@@ -2,7 +2,7 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  tools:context="com.beeblebroxlabs.sunrisealarm.weatherFragment">
+  tools:context="com.beeblebroxlabs.sunrisealarm.WeatherFragment">
 
   <TextView
     android:text="Cloudy 15 C"
@@ -13,6 +13,7 @@
     android:layout_alignParentStart="true"
     android:layout_alignParentEnd="true"
     android:gravity="center_horizontal"
-    android:textAlignment="center" />
+    android:textAlignment="center"
+    android:fontFamily="sans-serif-condensed"/>
 
 </FrameLayout>

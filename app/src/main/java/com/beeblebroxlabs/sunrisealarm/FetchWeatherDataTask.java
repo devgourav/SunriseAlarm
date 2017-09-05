@@ -1,6 +1,12 @@
 package com.beeblebroxlabs.sunrisealarm;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.media.MediaActionSound;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -17,39 +23,41 @@ import org.json.JSONObject;
 
 public class FetchWeatherDataTask extends AsyncTask<String,Void,String>{
 
-  public static final int KELVIN_CONST=-273;
-  public static final String DEGREE  = "\u00b0";
+
 
   public static final String REQUEST_METHOD = "GET";
   public static final int READ_TIMEOUT = 15000;
   public static final int CONNECTION_TIMEOUT = 15000;
 
-  URL url;
-  HttpURLConnection httpURLConnection;
-  InputStream inputStream;
-  InputStreamReader inputStreamReader;
-  String weatherJsonResponse = "";
+  public String sunriseTime;
+  SharedPreferences sharedPreferences;
+  private Context mContext;
+  private Activity mActivity;
 
-  String weatherDetails = "";
-  String cityName = "";
+
+  String weatherJsonResponse = " ",cityName = " ";
+  String weatherDetails = " ";
+
+  public FetchWeatherDataTask() {
+  }
+
 
   @Override
   protected String doInBackground(String... urls) {
     try {
-      url = new URL(urls[0]);
-      httpURLConnection = (HttpURLConnection)url.openConnection();
+
+      URL url = new URL(urls[0]);
+      HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
 
       //Set methods and timeouts
       httpURLConnection.setRequestMethod(REQUEST_METHOD);
       httpURLConnection.setReadTimeout(READ_TIMEOUT);
       httpURLConnection.setConnectTimeout(CONNECTION_TIMEOUT);
-
       httpURLConnection.connect();
-      System.out.println("Weather API Response:" + httpURLConnection.getResponseCode() + httpURLConnection.getResponseMessage());
 
 
-      inputStream = httpURLConnection.getInputStream();
-      inputStreamReader = new InputStreamReader(inputStream);
+      InputStream inputStream = httpURLConnection.getInputStream();
+      InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
 
       int data = inputStreamReader.read();
       while(data!=-1){
@@ -59,29 +67,36 @@ public class FetchWeatherDataTask extends AsyncTask<String,Void,String>{
       }
       inputStream.close();
       inputStreamReader.close();
-      try {
-        JSONObject weatherJsonObject = new JSONObject(weatherJsonResponse);
 
 
-        JSONObject weatherDescriptionObject = new JSONArray(
-            weatherJsonObject.getString("weather")).getJSONObject(0);
-        String weatherDescription = weatherDescriptionObject.getString("main");
-
-
-        JSONObject weatherTemperatureObject = weatherJsonObject.getJSONObject("main");
-        int weatherMainTemp = weatherTemperatureObject.getInt("temp");
-        weatherMainTemp = weatherMainTemp + KELVIN_CONST;
-
-        cityName = weatherJsonObject.getString("name");
-
-
-        weatherDetails = cityName + " " + weatherDescription + Integer.toString(weatherMainTemp) +DEGREE+"c";
-        System.out.println("weatherDetails:" + weatherDetails);
-
-      } catch (JSONException e) {
-        e.printStackTrace();
-      }
-      return weatherDetails;
+//      try {
+//        JSONObject weatherJsonObject = new JSONObject(weatherJsonResponse);
+//        JSONObject weatherDescriptionObject = new JSONArray(
+//            weatherJsonObject.getString("weather")).getJSONObject(0);
+//        String weatherDescription = weatherDescriptionObject.getString("main");
+//        JSONObject weatherTemperatureObject = weatherJsonObject.getJSONObject("main");
+//        int weatherMainTemp = weatherTemperatureObject.getInt("temp");
+//        weatherMainTemp = weatherMainTemp + KELVIN_CONST;
+//
+//        cityName = weatherJsonObject.getString("name");
+//        JSONObject weatherSysObject = weatherJsonObject.getJSONObject("sys");
+//        sunriseTime = weatherSysObject.getString("sunrise");
+//
+//        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+//        Editor editor = sharedPreferences.edit();
+//        editor.putString("sunriseTime",sunriseTime);
+//        editor.commit();
+//
+//        String st = sharedPreferences.getString("sunriseTime","Default");
+//        System.out.println("Sunrise time set:"+st);
+//
+//
+//        weatherDetails = cityName + " " + weatherDescription +
+//            Integer.toString(weatherMainTemp) +DEGREE+"c";
+//      } catch (JSONException e) {
+//        e.printStackTrace();
+//      }
+      return weatherJsonResponse;
     } catch (MalformedURLException e) {
       e.printStackTrace();
     } catch (IOException e) {
@@ -93,5 +108,11 @@ public class FetchWeatherDataTask extends AsyncTask<String,Void,String>{
   @Override
   protected void onPostExecute(String result) {
     super.onPostExecute(result);
+
+  }
+
+  @Override
+  protected void onPreExecute() {
+    super.onPreExecute();
   }
 }
